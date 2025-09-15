@@ -94,3 +94,7 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.circle {
+  @apply bg-red w-4 h-4 bradius-50 opacity-20;
+}
