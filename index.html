@@ -14,31 +14,50 @@
     </style>
   </head>
   <body>
-    <h2>Live Camera Feed</h2>
+    <!-- <h2>Live Camera Feed</h2> -->
     <video id="camera" autoplay playsinline></video>
     <br />
     <button id="snap">Take Photo</button>
+    <button id="start">start camera</button>
     <canvas id="snapshot" style="display: none"></canvas>
     <img id="photo" alt="Captured image" />
+    <div id="text"></div>
+    <!-- v5 -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <script>
       const video = document.getElementById("camera");
       const snapBtn = document.getElementById("snap");
       const canvas = document.getElementById("snapshot");
       const photo = document.getElementById("photo");
+      const start = document.getElementById("start");
+      const text = document.getElementById("text")
 
       // Request access to the camera
       async function startCamera() {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "user" }, // 'environment' for rear camera on mobile
+            video: {
+              facingMode: "environment",
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            }, // 'environment' for rear camera on mobile
             audio: false,
           });
           video.srcObject = stream;
         } catch (err) {
           console.error("Error accessing camera:", err);
-          alert("Could not access the camera. Please allow permission.");
+          alert(err + "Could not access the camera. Please allow permission.");
         }
+
+        const worker = await Tesseract.createWorker("chi_tra");
+        for (;;) {
+          takePhoto();
+          const ret = await worker.recognize(photo.src);
+          console.log("dbg :: " + ret.data.text);
+          text.innerText = ret.data.text
+        }
+        await worker.terminate();
       }
 
       // Capture a frame from the video
@@ -52,7 +71,7 @@
       }
 
       snapBtn.addEventListener("click", takePhoto);
-      startCamera();
+      start.addEventListener("click", startCamera);
     </script>
   </body>
 </html>
