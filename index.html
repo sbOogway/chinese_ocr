@@ -20,19 +20,19 @@
     <main class="h-screen w-screen">
       <div
         id="carousel-dots"
-        class="flex gap-1 hover:cursor-pointer w-full h-[5vh] p-4"
+        class="flex gap-1 hover:cursor-pointer w-full p-4"
       ></div>
       <div
         id="carousel-container"
-        class="flex overflow-x-auto snap-x snap-mandatory h-[95vh] w-screen"
+        class="flex overflow-x-auto snap-x snap-mandatory"
       >
-        <div class="w-full h-full overflow-y-hidden flex-none snap-start">
-          <video id="camera" autoplay playsinline></video>
-          <button id="snap" class="fixed bottom-4 left-4">Take Photo</button>
+        <div class="w-full flex-none snap-start flex flex-col">
+          <video id="camera" autoplay></video>
+          <!-- <canvas id="overlay"></canvas> -->
+          <button id="snap" >Take Photo</button>
         </div>
 
         <div class="w-full flex-none snap-start">
-          
           <button id="start">start camera</button>
           <canvas id="snapshot" style="display: none"></canvas>
           <img id="photo" alt="Captured image" />
@@ -52,6 +52,10 @@
       const photo = document.getElementById("photo");
       const start = document.getElementById("start");
       const text = document.getElementById("text");
+      const overlay = document.getElementById("overlay");
+
+      const carouselContainer = document.getElementById("carousel-container")
+
       var photoData;
       var img = new Image();
 
@@ -91,10 +95,38 @@
         // await new Promise((resolve) => setTimeout(resolve, 2000));
 
         await worker.terminate();
+
+        carouselContainer.children.item(1).scrollIntoView();
       }
+
+      // function drawRect() {
+      //   var ctx = overlay.getContext("2d");
+
+      //   overlay.width = video.videoWidth;
+      //   overlay.height = video.videoHeight;
+
+      //   ctx.drawImage(video, 0, 0, overlay.width, overlay.height);
+
+      //   var faceArea = 300;
+      //   var pX = overlay.width / 2 - faceArea / 2;
+      //   var yX = overlay.height / 2 - faceArea / 2;
+
+      //   ctx.rect(pX, pY, faceArea, faceArea);
+
+      //   ctx.linewidth = "6";
+      //   ctx.strokeStyle = "red";
+
+      //   ctx.stroke();
+
+      //   setTimeout(drawRect, 100);
+      // }
 
       snapBtn.addEventListener("click", takePhoto);
       start.addEventListener("click", startCamera);
+
+      // video.onplay = function () {
+      //   setTimeout(drawImage, 300);
+      // };
 
       start.click();
     </script>
