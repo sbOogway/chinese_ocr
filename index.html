@@ -18,10 +18,47 @@
     <video id="camera" autoplay playsinline></video>
     <br />
     <button id="snap">Take Photo</button>
+    <button id="start">start camera</button>
     <canvas id="snapshot" style="display: none"></canvas>
     <img id="photo" alt="Captured image" />
 
     <script>
-          </script>
+      const video = document.getElementById("camera");
+      const snapBtn = document.getElementById("snap");
+      const canvas = document.getElementById("snapshot");
+      const photo = document.getElementById("photo");
+      const start = document.getElementById("start");
+
+      // Request access to the camera
+      async function startCamera() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: "environment",
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            }, // 'environment' for rear camera on mobile
+            audio: false,
+          });
+          video.srcObject = stream;
+        } catch (err) {
+          console.error("Error accessing camera:", err);
+          alert(err + "Could not access the camera. Please allow permission.");
+        }
+      }
+
+      // Capture a frame from the video
+      function takePhoto() {
+        const ctx = canvas.getContext("2d");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Convert to data URL and show the image
+        photo.src = canvas.toDataURL("image/png");
+      }
+
+      snapBtn.addEventListener("click", takePhoto);
+      start.addEventListener("click", startCamera);
+    </script>
   </body>
 </html>
