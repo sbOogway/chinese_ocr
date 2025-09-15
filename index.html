@@ -56,7 +56,7 @@
         const worker = await Tesseract.createWorker("chi_tra");
         for (;;) {
           takePhoto();
-          const ret = await worker.recognize(img);
+          const ret = await worker.recognize(photoData);
           console.log("dbg :: " + ret.data.text);
           text.innerText = ret.data.text;
           await new Promise((resolve) => setTimeout(resolve, 2000));
