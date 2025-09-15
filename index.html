@@ -33,11 +33,10 @@
       const start = document.getElementById("start");
       const text = document.getElementById("text");
       var photoData;
-        var img = new Image();
+      var img = new Image();
 
       // Request access to the camera
       async function startCamera() {
-        
         try {
           const stream = await navigator.mediaDevices.getUserMedia({
             video: {
@@ -52,31 +51,33 @@
           console.error("Error accessing camera:", err);
           alert(err + "Could not access the camera. Please allow permission.");
         }
-
-        const worker = await Tesseract.createWorker("chi_tra");
-        for (;;) {
-          // takePhoto();
-          const ret = await worker.recognize(canvas.toDataURL("image/png"));
-          console.log("dbg :: " + ret.data.text);
-          text.innerText = ret.data.text;
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        }
-        await worker.terminate();
       }
 
       // Capture a frame from the video
-      // function takePhoto() {
-      //   const ctx = canvas.getContext("2d");
-      //   canvas.width = video.videoWidth;
-      //   canvas.height = video.videoHeight;
-      //   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      //   // Convert to data URL and show the image
-      //   photoData = canvas.toDataURL("image/png");
-      //   photo.src = photoData;
-      // }
+      async function takePhoto() {
+        const worker = await Tesseract.createWorker("chi_tra");
+        const ctx = canvas.getContext("2d");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Convert to data URL and show the image
+        photoData = canvas.toDataURL("image/png");
+        photo.src = photoData;
 
-      // snapBtn.addEventListener("click", takePhoto);
+        const ret = await worker.recognize(canvas.toDataURL("image/png"));
+        console.log(ret);
+        console.log("dbg :: " + ret.data.text);
+        text.innerText = ret.data.text;
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        await worker.terminate();
+      }
+
+      snapBtn.addEventListener("click", takePhoto);
       start.addEventListener("click", startCamera);
+
+      start.click();
+      
     </script>
   </body>
 </html>
