@@ -55,8 +55,8 @@
 
         const worker = await Tesseract.createWorker("chi_tra");
         for (;;) {
-          takePhoto();
-          const ret = await worker.recognize(photoData);
+          // takePhoto();
+          const ret = await worker.recognize(canvas.toDataURL("image/png"));
           console.log("dbg :: " + ret.data.text);
           text.innerText = ret.data.text;
           await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -65,17 +65,17 @@
       }
 
       // Capture a frame from the video
-      function takePhoto() {
-        const ctx = canvas.getContext("2d");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        // Convert to data URL and show the image
-        photoData = canvas.toDataURL("image/png");
-        photo.src = photoData;
-      }
+      // function takePhoto() {
+      //   const ctx = canvas.getContext("2d");
+      //   canvas.width = video.videoWidth;
+      //   canvas.height = video.videoHeight;
+      //   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      //   // Convert to data URL and show the image
+      //   photoData = canvas.toDataURL("image/png");
+      //   photo.src = photoData;
+      // }
 
-      snapBtn.addEventListener("click", takePhoto);
+      // snapBtn.addEventListener("click", takePhoto);
       start.addEventListener("click", startCamera);
     </script>
   </body>
