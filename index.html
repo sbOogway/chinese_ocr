@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <title>Device Camera Demo</title>
     <style>
-      video {
+      /* video {
         width: 100vw;
         height: 100vh;
       }
       button {
         margin-top: 10px;
-      }
+      } */
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="src/style.css" />
@@ -26,17 +26,31 @@
         id="carousel-container"
         class="flex overflow-x-auto snap-x snap-mandatory"
       >
-        <div class="w-full flex-none snap-start flex flex-col">
-          <video id="camera" autoplay></video>
+        <div
+          class="w-full h-full flex-none snap-start flex flex-col items-center p-4"
+        >
+          <div class="grid grid-cols-1 grid-rows-1 relative">
+            <video id="camera" class="inset-0" autoplay></video>
+            <div
+              style="
+                border: 2px solid red;
+                width: 64px;
+                height: 32px;
+                align-self: center;
+                justify-self: center;
+              "
+              class="absolute flex items-center justify-center"
+            ></div>
+          </div>
           <!-- <canvas id="overlay"></canvas> -->
-          <button id="snap" >Take Photo</button>
+          <button id="snap" class="rounded h-[4rem] w-[4rem]"></button>
         </div>
 
         <div class="w-full flex-none snap-start">
           <button id="start">start camera</button>
           <canvas id="snapshot" style="display: none"></canvas>
           <img id="photo" alt="Captured image" />
-          <div id="text">placeholder</div>
+          <!-- <div id="text">placeholder</div> -->
         </div>
       </div>
     </main>
@@ -54,7 +68,7 @@
       const text = document.getElementById("text");
       const overlay = document.getElementById("overlay");
 
-      const carouselContainer = document.getElementById("carousel-container")
+      const carouselContainer = document.getElementById("carousel-container");
 
       var photoData;
       var img = new Image();
@@ -79,11 +93,26 @@
 
       // Capture a frame from the video
       async function takePhoto() {
+        const textHeight = 32;
+        const textWidth = 64;
+        carouselContainer.children.item(1).scrollIntoView();
         const worker = await Tesseract.createWorker("chi_tra");
         const ctx = canvas.getContext("2d");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        var startX = (canvas.width - textWidth) / 2;
+        var startY = (canvas.height - textHeight) / 2;
+        ctx.drawImage(
+          video,
+          startX,
+          startY,
+          textWidth,
+          textHeight,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
         // Convert to data URL and show the image
         photoData = canvas.toDataURL("image/png");
         photo.src = photoData;
@@ -95,8 +124,6 @@
         // await new Promise((resolve) => setTimeout(resolve, 2000));
 
         await worker.terminate();
-
-        carouselContainer.children.item(1).scrollIntoView();
       }
 
       // function drawRect() {
