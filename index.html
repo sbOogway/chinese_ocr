@@ -35,8 +35,8 @@
             <div
               style="
                 border: 2px solid red;
-                width: 64px;
-                height: 32px;
+                width: 256px;
+                height: 128px;
                 align-self: center;
                 justify-self: center;
               "
@@ -44,14 +44,14 @@
             ></div>
           </div>
           <!-- <canvas id="overlay"></canvas> -->
-          <button id="snap" class="rounded h-[4rem] w-[4rem]"></button>
+          <button id="snap" class="rounded h-[4rem] w-[4rem]">O</button>
         </div>
 
         <div class="w-full flex-none snap-start">
           <button id="start">start camera</button>
           <canvas id="snapshot" style="display: none"></canvas>
           <img id="photo" alt="Captured image" />
-          <!-- <div id="text">placeholder</div> -->
+          <div id="text"></div>
         </div>
       </div>
     </main>
@@ -66,7 +66,6 @@
       const photo = document.getElementById("photo");
       const start = document.getElementById("start");
       const text = document.getElementById("text");
-      const overlay = document.getElementById("overlay");
 
       const carouselContainer = document.getElementById("carousel-container");
 
@@ -93,8 +92,8 @@
 
       // Capture a frame from the video
       async function takePhoto() {
-        const textHeight = 32;
-        const textWidth = 64;
+        const textHeight = 128;
+        const textWidth = 256;
         carouselContainer.children.item(1).scrollIntoView();
         const worker = await Tesseract.createWorker("chi_tra");
         const ctx = canvas.getContext("2d");
@@ -110,8 +109,8 @@
           textHeight,
           0,
           0,
-          canvas.width,
-          canvas.height
+          textWidth,
+          textHeight
         );
         // Convert to data URL and show the image
         photoData = canvas.toDataURL("image/png");
